@@ -1,5 +1,27 @@
-
 <script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const columns = [{
+  key: 'id',
+  label: 'ID'
+}, {
+  key: 'name',
+  label: 'Name',
+  sortable: true
+}, {
+  key: 'title',
+  label: 'Title',
+  sortable: true
+}, {
+  key: 'email',
+  label: 'Email',
+  sortable: true,
+  direction: 'desc' as const
+}, {
+  key: 'role',
+  label: 'Role'
+}];
+
 const people = [{
   id: 1,
   name: 'Lindsay Walton',
@@ -78,23 +100,40 @@ const people = [{
   title: 'Senior Designer',
   email: '',
   role: 'Owner'
-}]
+}];
 
-const page = ref(1)
-const pageCount = 5
+const page = ref(1);
+const pageCount = 5;
+
+const searchQuery = ref('');
+const filteredPeople = computed(() => {
+  if (!searchQuery.value) {
+    return people;
+  }
+  const query = searchQuery.value.toLowerCase();
+  return people.filter(person => {
+    return (
+        person.name.toLowerCase().includes(query) ||
+        person.title.toLowerCase().includes(query) ||
+        person.email.toLowerCase().includes(query) ||
+        person.role.toLowerCase().includes(query)
+    );
+  });
+});
 
 const rows = computed(() => {
-  return people.slice((page.value - 1) * pageCount, (page.value) * pageCount)
-})
+  return filteredPeople.value.slice((page.value - 1) * pageCount, page.value * pageCount);
+});
 </script>
 
 <template>
   <div>
-    <UTable :rows="rows" />
+    <input v-model="searchQuery" placeholder="Search..." class="p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500">
+
+    <UTable :columns="columns" :rows="rows" />
 
     <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-      <UPagination v-model="page" :page-count="pageCount" :total="people.length" />
+      <UPagination v-model="page" :page-count="pageCount" :total="filteredPeople.length" />
     </div>
   </div>
 </template>
-
