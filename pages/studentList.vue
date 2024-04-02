@@ -1,26 +1,5 @@
 
 <script setup lang="ts">
-const columns = [{
-  key: 'id',
-  label: 'ID'
-}, {
-  key: 'name',
-  label: 'Name',
-  sortable: true
-}, {
-  key: 'title',
-  label: 'Title',
-  sortable: true
-}, {
-  key: 'email',
-  label: 'Email',
-  sortable: true,
-  direction: 'desc' as const
-}, {
-  key: 'role',
-  label: 'Role'
-}]
-
 const people = [{
   id: 1,
   name: 'Lindsay Walton',
